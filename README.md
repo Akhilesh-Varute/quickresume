@@ -46,7 +46,7 @@
 
 1. **Clone the repository**
 ```
-git clone https://github.com/yourusername/quickresume.git
+git clone https://github.com/Akhilesh-Varute/quickresume
 cd quickresume
 ```
 
@@ -220,7 +220,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Akhilesh Varute**
 - LinkedIn: [linkedin.com/in/akhileshvarute](https://linkedin.com/in/akhileshvarute)
 - Email: akhileshvarute23@gmail.com
-- GitHub: [@yourusername](https://github.com/yourusername)
+- GitHub: [Akhilesh Varute](github.com/Akhilesh-Varute)
 
 ## 🗺️ Roadmap
 
@@ -278,7 +278,7 @@ See [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) for more.
 
 ---
 
-Made with ❤️ by [Akhilesh Varute](https://github.com/yourusername)
+Made with ❤️ by [Akhilesh Varute](github.com/Akhilesh-Varute/)
 
 If this helped you land a job, consider ⭐ starring the repo!
 
