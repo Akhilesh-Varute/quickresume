@@ -1,0 +1,357 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+.app {
+  max-width: 1200px;
+  margin: 20px auto;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 30px;
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 2.5em;
+  margin-bottom: 10px;
+}
+
+.tabs {
+  display: flex;
+  background: #f5f5f5;
+  border-bottom: 2px solid #ddd;
+}
+
+.tabs button {
+  flex: 1;
+  padding: 20px;
+  border: none;
+  background: #f5f5f5;
+  font-size: 1.1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.tabs button:hover {
+  background: #e8e8e8;
+}
+
+.tabs button.active {
+  background: white;
+  color: #667eea;
+  border-bottom: 3px solid #667eea;
+}
+
+.content {
+  padding: 40px;
+}
+
+.form-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.info-box {
+  background: #e3f2fd;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border-left: 4px solid #2196f3;
+}
+
+.warning {
+  background: #fff3cd;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border-left: 4px solid #ffc107;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 1em;
+  font-family: inherit;
+}
+
+.form-group textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.item-group {
+  background: #f9f9f9;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+}
+
+.item-group input,
+.item-group textarea {
+  margin-bottom: 10px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 15px 40px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  width: 100%;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.btn-success {
+  background: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-info {
+  background: #2196f3;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.success {
+  background: #e8f5e9;
+  color: #2e7d32;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+  border-left: 4px solid #4caf50;
+}
+
+.error {
+  background: #ffebee;
+  color: #c62828;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+  border-left: 4px solid #f44336;
+}
+
+.preview {
+  border: 1px solid #ddd;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 8px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+h3 {
+  margin: 30px 0 15px 0;
+  color: #667eea;
+}
+
+/* Resume Display Styling - Matches your PDF format */
+.resume-display {
+  background: white;
+  padding: 40px;
+  margin-top: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-family: "Segoe UI", Arial, sans-serif;
+  line-height: 1.6;
+  color: #000;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.resume-display h1 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #000;
+  text-align: center;
+}
+
+.resume-display h2 {
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #333;
+  border-bottom: 2px solid #333;
+  padding-bottom: 5px;
+  margin-top: 25px;
+  margin-bottom: 15px;
+}
+
+.resume-display h3 {
+  font-size: 11px;
+  font-weight: bold;
+  color: #000;
+  margin-bottom: 5px;
+}
+
+.resume-display p {
+  font-size: 11px;
+  color: #000;
+  margin-bottom: 10px;
+}
+
+.resume-display ul {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 15px;
+}
+
+.resume-display li {
+  font-size: 11px;
+  color: #000;
+  padding-left: 20px;
+  position: relative;
+  margin-bottom: 5px;
+}
+
+.resume-display li:before {
+  content: "•";
+  position: absolute;
+  left: 5px;
+}
+
+.resume-display a {
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.resume-display a:hover {
+  text-decoration: underline;
+}
+
+/* Contact info styling */
+.resume-display header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.resume-display header p {
+  font-size: 10px;
+  color: #666;
+}
+
+/* Meta info (dates, locations) */
+.resume-display .meta {
+  font-size: 10px;
+  color: #666;
+  font-style: italic;
+}
+
+/* Print-specific styles */
+@media print {
+  .resume-display {
+    padding: 0;
+    border: none;
+    box-shadow: none;
+  }
+}
+
+/* Resume Display - Matches PDF Format Exactly */
+.resume-display {
+  background: #fff;
+  padding: 40px 20px;
+  margin: 20px auto;
+  max-width: 800px;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-family: "Segoe UI", Arial, sans-serif;
+  line-height: 1.6;
+  color: #000;
+}
+
+.metadata-box {
+  background: #f8f9fa;
+  border-left: 4px solid #28a745;
+  padding: 15px;
+  margin: 15px 0;
+  border-radius: 4px;
+}
+
+.metadata-box h3 {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.metadata-box p {
+  margin: 5px 0;
+  font-size: 12px;
+  color: #666;
+}
+
+@media print {
+  .resume-display {
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+  }
+}

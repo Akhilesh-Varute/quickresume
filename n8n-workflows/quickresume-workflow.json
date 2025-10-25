@@ -1,0 +1,328 @@
+{
+  "name": "Smart Resume Generator - Complete System",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "save-profile",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "374ffcfd-8961-4b56-9d55-e4d123a39657",
+      "name": "Save Profile API",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        64
+      ],
+      "webhookId": "3071c803-a8ca-4ab6-8c26-70894bda3862"
+    },
+    {
+      "parameters": {
+        "path": "get-profile",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "d53b34c8-e74a-4fcf-bfb9-e97b18e40e9a",
+      "name": "Get Profile API",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        272
+      ],
+      "webhookId": "0a495c2f-e60d-44da-bce3-23452517c656"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get data from webhook - check both possible locations\nlet profile = $input.item.json.body || $input.item.json;\n\n// Handle the case where data might be in different formats\nif (!profile || typeof profile !== 'object') {\n  throw new Error('Invalid request body');\n}\n\n// Validate required fields\nif (!profile.name || !profile.email) {\n  throw new Error('Name and email are required');\n}\n\n// Add timestamp\nprofile.updated_at = new Date().toISOString();\n\n// Store in workflow static data (using $ prefix, not this.)\nconst staticData = $getWorkflowStaticData('global');\nstaticData.userProfile = profile;\n\nreturn {\n  json: {\n    success: true,\n    message: 'Profile saved successfully',\n    profile: profile\n  }\n};\n"
+      },
+      "id": "9a0c3677-0dd6-4587-9c5f-86ccab99fac5",
+      "name": "Save Profile Logic",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        128,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Retrieve stored profile (using $ prefix, not this.)\nconst staticData = $getWorkflowStaticData('global');\nconst profile = staticData.userProfile;\n\nif (!profile) {\n  return {\n    json: {\n      success: false,\n      message: 'No profile found. Please save your profile first.'\n    }\n  };\n}\n\nreturn {\n  json: {\n    success: true,\n    profile: profile\n  }\n};\n"
+      },
+      "id": "ee63bd6d-acda-4b0c-ac95-c340eb6c1e80",
+      "name": "Get Profile Logic",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        128,
+        272
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "bf8cc979-18ab-45d3-bc92-f5e43ddcef1d",
+      "name": "Respond - Profile Saved",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        320,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "0dda72d5-1330-4195-834b-979650650f76",
+      "name": "Respond - Get Profile",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        320,
+        272
+      ]
+    },
+    {
+      "parameters": {
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        496,
+        480
+      ],
+      "id": "d8a65b80-5157-4025-8f19-83acedc4ffbf",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "anthropic.claude-3-5-sonnet-20240620-v1:0",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAwsBedrock",
+      "typeVersion": 1.1,
+      "position": [
+        496,
+        640
+      ],
+      "id": "309a58bd-4626-41fc-871e-720ae25c919a",
+      "name": "AWS Bedrock Chat Model",
+      "credentials": {
+        "aws": {
+          "id": "RO6S75SneVnHgmGK",
+          "name": "AWS account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "generate-resume",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "5d8b4370-271b-4afc-ae19-82ea80bc55db",
+      "name": "Generate Resume API1",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        480
+      ],
+      "webhookId": "27557ea0-f3b7-4d56-b177-c5a0b6c0c017"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "c5982b8f-020f-4ccb-8436-d06dc27a0d6b",
+      "name": "Respond - Resume Generated1",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        992,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const staticData = $getWorkflowStaticData('global');\nconst userProfile = staticData.userProfile;\n\nif (!userProfile) {\n  throw new Error('Profile not found. Please save your profile first');\n}\n\nconst input = $input.item.json.body || $input.item.json;\nconst jobDescription = input.job_description;\nconst tone = input.tone || 'professional';\nconst maxBulletsPerRole = input.max_bullets_per_role || 4;\n\nif (!jobDescription) {\n  throw new Error('job_description is required');\n}\n\nconst systemPrompt = `You are an elite executive resume writer who specializes in making candidates instantly hireable. Your resumes consistently get 3-5x more interview calls than standard resumes. You understand ATS systems, recruiter psychology, and what makes a candidate stand out.`;\n\nconst userPrompt = `\nCANDIDATE PROFILE:\n${JSON.stringify(userProfile, null, 2)}\n\nTARGET JOB DESCRIPTION:\n${jobDescription}\n\nSETTINGS:\n- Tone: ${tone}\n- Max bullets per role: ${maxBulletsPerRole}\n\n=== YOUR MISSION ===\nCreate a HIRE-READY resume that makes recruiters say \"We NEED to interview this person.\" This resume should:\n1. Pass ATS keyword matching (80%+ match)\n2. Make the candidate look like the PERFECT fit\n3. Generate immediate interview interest\n4. Showcase impact and results prominently\n\n=== STEP 1: DEEP JD ANALYSIS ===\nExtract and prioritize:\n1. **Must-have skills** (technical + soft skills)\n2. **Key responsibilities** (what they'll do daily)\n3. **Success metrics** (how they measure performance)\n4. **Industry buzzwords** (exact terminology used)\n5. **Experience level** (junior/mid/senior indicators)\n6. **Company culture signals** (collaborative, innovative, etc.)\n\nCreate a keyword map: [JD keyword] → [How candidate matches]\n\n=== STEP 2: STRATEGIC POSITIONING ===\n\n**SUMMARY - THE HOOK (2-3 lines)**\n- Lead with JD job title + \"with expertise in [top 3 JD keywords]\"\n- Second line: Quantified achievements matching JD priorities\n- Third line: Unique value prop relevant to role\n- Must contain 5-7 JD keywords naturally\n\n**EXPERIENCE - RESULTS-FOCUSED**\nFor each role, REWRITE bullets to:\n- Lead with JD-relevant action verbs (not generic ones)\n- Structure: [Action] + [Context] + [Measurable Result]\n- Quantify EVERYTHING (%, $, time, scale, impact)\n- Use JD terminology, not your internal jargon\n- Show progression and growth\n- Limit to ${maxBulletsPerRole} bullets per role\n\n**Bullet Formula:**\n[JD Keyword Action Verb] [specific task using JD terms] resulting in [quantified impact relevant to JD]\n\n**SKILLS - ATS OPTIMIZED**\n- List in order of JD priority (not candidate's priority)\n- Group by JD-mentioned categories\n- Include both acronyms AND full terms (AWS AND Amazon Web Services)\n- Match exact JD phrasing when possible\n\n=== CRITICAL RULES ===\n\n**ABSOLUTE REQUIREMENTS:**\n✓ Every bullet must contain JD keywords\n✓ Every achievement must be quantified\n✓ Match JD's seniority level in language\n✓ Use present tense for current role, past for others\n✓ No clichés (\"team player\", \"hard worker\")\n\n**STRICT PROHIBITIONS:**\n✗ DO NOT invent experience, companies, or projects\n✗ DO NOT add skills candidate doesn't have\n✗ DO NOT fabricate metrics\n✗ DO NOT add requirements from JD that candidate can't fulfill\n✗ DO NOT use generic corporate speak\n\n=== EXACT RESUME STRUCTURE (MATCH SAMPLE PDF) ===\n\nHEADER (Centered):\n- Name: 24px, bold, black\n- Contact: 10px, gray, single line with | separators\n- Format: email | phone | linkedin | location\n\nSECTIONS (in this order):\n1. SUMMARY (2-3 lines max, impactful)\n2. EXPERIENCE (reverse chronological)\n3. EDUCATION (reverse chronological)\n4. CERTIFICATIONS (most relevant first)\n5. SKILLS (categorized, not a long list)\n\nVISUAL SPACING:\n- 25px margin between sections\n- 20px margin between roles\n- 6px between bullet points\n\n=== EXACT HTML OUTPUT ===\n\n<div style=\"font-family: 'Segoe UI', Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 40px 20px; line-height: 1.6; color: #000; background: #fff;\">\n  \n  <header style=\"text-align: center; margin-bottom: 30px;\">\n    <h1 style=\"font-size: 24px; font-weight: bold; margin: 0 0 8px 0; color: #000; letter-spacing: 0.5px;\">[FULL NAME]</h1>\n    <p style=\"font-size: 10px; color: #666; margin: 0; letter-spacing: 0.3px;\">[email] | [phone] | [linkedin] | [location]</p>\n  </header>\n\n  <section style=\"margin-bottom: 25px;\">\n    <h2 style=\"font-size: 12px; font-weight: bold; text-transform: uppercase; border-bottom: 2px solid #333; padding-bottom: 5px; margin: 0 0 15px 0; color: #333; letter-spacing: 1px;\">SUMMARY</h2>\n    <p style=\"font-size: 11px; margin: 0; line-height: 1.7; color: #000;\">[JD-focused summary with role + keywords + metric]</p>\n  </section>\n\n  <section style=\"margin-bottom: 25px;\">\n    <h2 style=\"font-size: 12px; font-weight: bold; text-transform: uppercase; border-bottom: 2px solid #333; padding-bottom: 5px; margin: 0 0 15px 0; color: #333; letter-spacing: 1px;\">EXPERIENCE</h2>\n    \n    <div style=\"margin-bottom: 20px;\">\n      <h3 style=\"font-size: 11px; font-weight: bold; margin: 0 0 3px 0; color: #000;\">[Job Title]</h3>\n      <p style=\"font-size: 10px; color: #666; margin: 0 0 8px 0; font-style: italic;\">[Company] | [Month Year - Present/Month Year] | [Location]</p>\n      <ul style=\"list-style: none; padding: 0; margin: 0;\">\n        <li style=\"font-size: 11px; padding-left: 15px; position: relative; margin-bottom: 6px; color: #000; line-height: 1.6;\">\n          <span style=\"position: absolute; left: 0; font-weight: bold;\">•</span>\n          [Action verb] [JD-keyword task] [quantified result]\n        </li>\n      </ul>\n    </div>\n  </section>\n\n  <section style=\"margin-bottom: 25px;\">\n    <h2 style=\"font-size: 12px; font-weight: bold; text-transform: uppercase; border-bottom: 2px solid #333; padding-bottom: 5px; margin: 0 0 15px 0; color: #333; letter-spacing: 1px;\">EDUCATION</h2>\n    <div style=\"margin-bottom: 12px;\">\n      <p style=\"font-size: 11px; font-weight: bold; margin: 0 0 3px 0; color: #000;\">[Degree]</p>\n      <p style=\"font-size: 10px; color: #666; margin: 0; font-style: italic;\">[Institution] | [Year]</p>\n    </div>\n  </section>\n\n  <section style=\"margin-bottom: 25px;\">\n    <h2 style=\"font-size: 12px; font-weight: bold; text-transform: uppercase; border-bottom: 2px solid #333; padding-bottom: 5px; margin: 0 0 15px 0; color: #333; letter-spacing: 1px;\">CERTIFICATIONS</h2>\n    <div style=\"margin-bottom: 12px;\">\n      <p style=\"font-size: 11px; font-weight: bold; margin: 0 0 3px 0; color: #000;\">[Cert Name]</p>\n      <p style=\"font-size: 10px; color: #666; margin: 0; font-style: italic;\">[Issuer] | [Year]</p>\n    </div>\n  </section>\n\n  <section>\n    <h2 style=\"font-size: 12px; font-weight: bold; text-transform: uppercase; border-bottom: 2px solid #333; padding-bottom: 5px; margin: 0 0 15px 0; color: #333; letter-spacing: 1px;\">SKILLS</h2>\n    <p style=\"font-size: 11px; margin: 0 0 6px 0; color: #000; line-height: 1.7;\"><strong>[JD-Priority Category]:</strong> skill1, skill2, skill3</p>\n  </section>\n\n</div>\n\nSTYLING RULES:\n- Font: Segoe UI, Arial, sans-serif\n- Max width: 800px, centered\n- Colors: Black #000 text, Gray #333 headers, Gray #666 meta\n- NO colors except black/gray\n- Single column, no tables\n- Print-friendly\n\n=== OUTPUT FORMAT ===\n\nReturn ONLY this JSON:\n{\n  \"html_resume\": \"[Complete HTML matching structure above]\",\n  \"plain_text_resume\": \"[Formatted text version]\",\n  \"metadata\": {\n    \"extracted_keywords\": [\"keyword1\", \"keyword2\"],\n    \"ats_score_estimate\": \"85%\",\n    \"wow_factors\": [\"achievement1\", \"achievement2\"],\n    \"skills_matched\": {\"jd_skill\": \"candidate_skill\"},\n    \"missing_requirements\": [\"requirement1\"],\n    \"optimization_notes\": [\"what_was_enhanced\"]\n  }\n}\n\nQUALITY CHECK:\n✓ Would a recruiter call THIS candidate?\n✓ Passes 6-second scan test?\n✓ ATS match > 80%?\n✓ Every bullet quantified?\n✓ Matches exact HTML structure?\n✓ Truthful but optimized?\n`;\n\n// Return in n8n format\nreturn [{\n  json: {\n    systemPrompt,\n    userPrompt,\n    userProfile,\n    jobDescription,\n    tone,\n    maxBulletsPerRole\n  }\n}];\n"
+      },
+      "id": "fce9b6aa-7dca-4996-887b-489a6d205e36",
+      "name": "Prepare Resume Generation1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        128,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the prepared prompt data\nconst data = $input.item.json;\n\n// Combine system and user prompts into a single message\n// Bedrock via Basic LLM Chain expects a simple text input\nconst fullPrompt = `${data.systemPrompt}\n\n${data.userPrompt}`;\n\nreturn {\n  json: {\n    chatInput: fullPrompt,\n    // Keep original data for reference\n    userProfile: data.userProfile,\n    jobDescription: data.jobDescription\n  }\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        480
+      ],
+      "id": "64274754-944e-4ef7-8198-a2c6aa21c216",
+      "name": "Format Prompt for Bedrock"
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.item.json;\nconst aiOutput = response.text || response.output;\n\nif (!aiOutput) {\n  throw new Error('No output from AI');\n}\n\nlet cleanedOutput = aiOutput;\n\n// Remove any control characters that break JSON parsing\ncleanedOutput = cleanedOutput.replace(/[\\x00-\\x1F\\x7F]/g, '');\n\n// Try to parse\nlet resumeData;\ntry {\n  resumeData = JSON.parse(cleanedOutput);\n} catch (error) {\n  // If it still fails, log what we got\n  const preview = cleanedOutput.substring(0, 300);\n  throw new Error('JSON parse failed. Preview: ' + preview);\n}\n\n// Add metadata\nresumeData.generated_at = new Date().toISOString();\nresumeData.model_used = 'bedrock-claude';\nresumeData.tokens_used = { input: 0, output: 0 };\n\nreturn { json: resumeData };\n"
+      },
+      "id": "94e37ac5-45d6-42fb-85be-175c933221dc",
+      "name": "Parse Bedrock Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        480
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Save Profile API": {
+      "main": [
+        [
+          {
+            "node": "Save Profile Logic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Profile API": {
+      "main": [
+        [
+          {
+            "node": "Get Profile Logic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Profile Logic": {
+      "main": [
+        [
+          {
+            "node": "Respond - Profile Saved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Profile Logic": {
+      "main": [
+        [
+          {
+            "node": "Respond - Get Profile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AWS Bedrock Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Resume API1": {
+      "main": [
+        [
+          {
+            "node": "Prepare Resume Generation1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Parse Bedrock Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Resume Generation1": {
+      "main": [
+        [
+          {
+            "node": "Format Prompt for Bedrock",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Bedrock Response": {
+      "main": [
+        [
+          {
+            "node": "Respond - Resume Generated1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Prompt for Bedrock": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "bc6b6793-59cd-463f-9ebb-f3fd9c281f44",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cd9f64e6d1142cae8fffaec17df669b96b7209d72d95da0c585cc1650caed2ce"
+  },
+  "id": "IWp5NCK5KzWctPs0",
+  "tags": []
+}

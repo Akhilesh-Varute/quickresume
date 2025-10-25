@@ -1,0 +1,46 @@
+{
+  "name": "quickresume",
+  "version": "1.0.0",
+  "description": "AI-powered resume generator that tailors resumes to job descriptions in 30 seconds",
+  "author": "Akhilesh Varute",
+  "keywords": [
+    "resume",
+    "AI",
+    "ATS",
+    "job-matching",
+    "career",
+    "automation"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Akhilesh-Varute/quickresume"
+  },
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "dompurify": "^3.3.0",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^3.0.3",
+    "jspdf-autotable": "^5.0.2",
+    "jspdf-html2canvas": "^1.5.2",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.36.0",
+    "@types/react": "^19.1.16",
+    "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-react-swc": "^4.1.0",
+    "eslint": "^9.36.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.22",
+    "globals": "^16.4.0",
+    "vite": "^7.1.7"
+  }
+}
